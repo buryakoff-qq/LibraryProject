@@ -1,0 +1,55 @@
+﻿@inject BooksService BooksService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@using Microsoft.AspNetCore.Components.Rendering
+@page "/books"
+@code {
+    private List<Book> booksList = new();
+    protected override async Task OnInitializedAsync()
+    {
+        booksList = await BooksService.GetAllBooksAsync();
+    }
+
+}
+<h3>Books</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Author</th>
+            <th>Author Id</th>
+            <th>
+                <button class="btn btn-secondary" @onclick="@(() => NavigationManager.NavigateTo($"/books/create", forceLoad: false))">Create Book</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Book book in booksList)
+        {
+            <tr>
+                <td>@book.Id</td>
+                <td>@book.Title</td>
+                <td>@book.Genre</td>
+                @if (book.Author != null)
+                {
+                    <td>@book.Author.Name @book.Author.Surename</td>
+                    <td>@book.Author.Id</td>
+                }
+                else
+                {
+                    <td>None</td>
+                    <td>None</td>
+                }
+                <td>
+                    <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo($"/books/{book.Id}", forceLoad: false))">Show</button>
+                    <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo($"/books/{book.Id}/edit", forceLoad: false))">Edit</button>
+                    <button class="btn btn-danger" @onclick="@(() => NavigationManager.NavigateTo($"/books/{book.Id}/delete", forceLoad: false))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

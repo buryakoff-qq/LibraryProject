@@ -1,0 +1,47 @@
+﻿@inject BooksService BooksService
+@inject NavigationManager NavigationManager
+@inject AuthorsService AuthorsService
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@page "/books/{id:long}/edit"
+
+<h3>Edit</h3>
+<div>
+    <EditForm Model="@book">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText class="form-control" id="title" @bind-Value="@book.Title" />
+            <label for="genre">Genre</label>
+            <InputText class="form-control" id="genre" @bind-Value="@book.Genre" />
+        </div>
+        <div class="form-group">
+            <label for="authorId">Author</label>
+            <InputSelect class="form-control" id="authorId" @bind-Value="@book.AuthorId">
+                <option value="">None</option>
+                @foreach (var author in authors)
+                {
+                    <option value="@author.Id">@author.Name @author.Surename</option>
+                }
+            </InputSelect>
+            <button type="submit" class="btn btn-primary mt-2" @onclick="@EditBookAsync">Edit</button>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    private Book book = new Book();
+    private List<Author> authors = new List<Author>();
+    protected override async Task OnInitializedAsync()
+    {
+        book = await BooksService.GetBookByIdAsync(Id);
+        authors = await AuthorsService.GetAllAuthorsAsync();
+    }
+    private async Task EditBookAsync()
+    {
+        await BooksService.UpdateBookAsync(book);
+        NavigationManager.NavigateTo("/books");
+    }
+}

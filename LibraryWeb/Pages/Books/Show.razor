@@ -1,0 +1,46 @@
+﻿@inject BooksService BooksService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@page "/books/{Id:long}"
+
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    private Book book = new Book();
+    private List<Author> authors = new List<Author>();
+    protected override async Task OnInitializedAsync()
+    {
+        book = await BooksService.GetBookByIdAsync(Id);
+    }
+
+}
+<h3>Show</h3>
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@book.Id</td>
+                <td>@book.Title</td>
+                <td>@book.Genre</td>
+                @if (book.Author != null)
+                {
+                    <td>@book.Author.Name @book.Author.Surename</td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>

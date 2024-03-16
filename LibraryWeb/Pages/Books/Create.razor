@@ -1,0 +1,46 @@
+﻿@inject BooksService BooksService
+@inject AuthorsService AuthorsService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+
+@using LibraryWeb.Services
+@page "/books/create"
+@code {
+    private bool state = false;
+    private List<Author> authorsList = new List<Author>();
+    private Book book = new Book();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        authorsList = await AuthorsService.GetAllAuthorsAsync();
+    }
+    private async Task CreateBook()
+    {
+        await BooksService.CreateBookAsync(book);
+        NavigationManager.NavigateTo("/books");
+
+    }
+}
+<h3>Create</h3>
+<div>
+    <EditForm Model="@book" OnValidSubmit="@CreateBook">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText class="form-control" id="title" @bind-Value="@book.Title" />
+            <label for="genre">Genre</label>
+            <InputText class="form-control" id="genre" @bind-Value="@book.Genre" />
+        </div>
+        <div class="form-group">
+            <label for="authorId">Author</label>
+            <InputSelect class="form-control" id="authorId" @bind-Value="@book.AuthorId">
+                <option value="">None</option>
+                @foreach (var author in authorsList)
+                {
+                    <option value="@author.Id">@author.Name @author.Surename</option>
+                }
+            </InputSelect>
+            <button type="submit" class="btn btn-primary mt-2">Create</button>
+        </div>
+    </EditForm>
+</div>

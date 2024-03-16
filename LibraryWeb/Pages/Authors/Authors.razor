@@ -1,0 +1,49 @@
+﻿@inject AuthorsService AuthorsService
+@inject NavigationManager NavigationManager
+@page "/authors"
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@using Microsoft.AspNetCore.Components.Rendering
+
+<h3>Authors page</h3>
+
+@code {
+    private List<Author> authorsList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        authorsList = await AuthorsService.GetAllAuthorsAsync();
+    }
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surename</th>
+            <th>Books Count</th>
+            <span>
+                <button class="btn btn-secondary" @onclick="@(() => NavigationManager.NavigateTo($"/authors/create", forceLoad: false))">Create Author</button>
+            </span>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (Author author in authorsList)
+        {
+            <tr>
+                <td>@author.Id</td>
+                <td>@author.Name</td>
+                <td>@author.Surename</td>
+                <td>@author.Books?.Count</td>
+                <td>
+                    <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo($"/authors/{@author.Id}", forceLoad: false))">Show</button>
+                    <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo($"/authors/{@author.Id}/edit", forceLoad: false))">Edit</button>
+                    <button class="btn btn-danger" @onclick="@(() => NavigationManager.NavigateTo($"/authors/{@author.Id}/delete", forceLoad: false))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

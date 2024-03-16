@@ -1,0 +1,28 @@
+﻿@inject BooksService BooksService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@using Microsoft.AspNetCore.Components.Rendering
+@page "/books/{id:long}/delete"
+
+<div>
+    <h1>Are you sure you want to delete @book.Title with ID: @book.Id?</h1>
+    <button class="btn btn-danger" style="margin-top: 15px" @onclick="@DeleteAuthor">Delete</button>
+    <button class="btn btn-primary" style="margin-top: 15px" @onclick="@(() => NavigationManager.NavigateTo("/books", forceLoad: false))">Cancel</button>
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    private Book book { set; get; } = new Book();
+    protected override async Task OnInitializedAsync()
+    {
+        book = await BooksService.GetBookByIdAsync(Id);
+    }
+
+    public async Task DeleteAuthor()
+    {
+        await BooksService.DeleteBookAsync(Id);
+        NavigationManager.NavigateTo("/books");
+    }
+}

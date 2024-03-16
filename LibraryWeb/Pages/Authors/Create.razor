@@ -1,0 +1,34 @@
+﻿@inject AuthorsService AuthorsService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@page "/authors/create"
+
+<h3>Create an Author</h3>
+
+<div>
+    <EditForm Model="@author" OnValidSubmit="@CreateAuthor">
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="author.Name" />
+        </div>
+        <div class="form-group">
+            <label for="surename">Surename</label>
+            <InputText id="surename" class="form-control" @bind-Value="author.Surename" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 15px">Create</button>
+
+    </EditForm>
+</div>
+
+@code {
+    private Author author = new Author();
+
+    private async Task CreateAuthor()
+    {
+        author.Books = null;
+        await AuthorsService.CreateAuthorAsync(author);
+        NavigationManager.NavigateTo("/authors");
+    }
+}

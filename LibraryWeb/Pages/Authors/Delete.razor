@@ -1,0 +1,25 @@
+﻿@inject AuthorsService AuthorsService
+@inject NavigationManager NavigationManager
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+@page "/authors/{id:long}/delete"
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    private Author author { set; get; } = new Author();
+    protected override async Task OnInitializedAsync()
+    {
+        author = await AuthorsService.GetAuthorByIdAsync(Id);
+    }
+
+    public async Task DeleteAuthor()
+    {
+        await AuthorsService.DeleteAuthorAsync(Id);
+        NavigationManager.NavigateTo("/authors");
+    }
+}
+<div style="align-content: center">
+    <h1>Are you sure you want to delete @author.Name @author.Surename with ID: @author.Id?</h1>
+    <button class="btn btn-danger" style="margin-top: 15px" @onclick="@DeleteAuthor">Delete</button>
+    <button class="btn btn-primary" style="margin-top: 15px" @onclick="@(() => NavigationManager.NavigateTo("/authors", forceLoad: false))">Cancel</button>
+</div>

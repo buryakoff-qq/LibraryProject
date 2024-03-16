@@ -1,0 +1,42 @@
+﻿@inject AuthorsService AuthorsService
+@inject NavigationManager NavigationManager
+@page "/authors/{id:long}/edit"
+@using LibraryWeb.Models
+@using LibraryWeb.Services
+<h3>Edit Author</h3>
+
+<main>
+    <EditForm Model="@author">
+        <ValidationSummary />
+        <div>
+            <label for="id">Identifier</label>
+            <input type="text" class="form-control" value="@author.Id" disabled />
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="author.Name" />
+        </div>
+        <div class="form-group">
+            <label for="surename">Surename</label>
+            <InputText id="surename" class="form-control" @bind-Value="author.Surename" />
+        </div>
+        <button class="btn btn-primary mt-2" @onclick="@EditAuthor">Edit</button>
+        <button class="btn btn-secondary mt-2" @onclick="@(() => NavigationManager.NavigateTo("/authors", forceLoad: false))">Cancel</button>
+    </EditForm>
+</main>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    public int displayAuthorId { get; set; }
+    private Author author = new Author();
+    protected override async Task OnInitializedAsync()
+    {
+        author = await AuthorsService.GetAuthorByIdAsync(Id);
+    }
+    private async Task EditAuthor()
+    {
+        await AuthorsService.UpdateAuthorAsync(author);
+        NavigationManager.NavigateTo("/authors");
+    }
+}

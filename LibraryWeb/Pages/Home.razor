@@ -1,0 +1,14 @@
+﻿@inject NavigationManager NavigationManager
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1> Books And Authors</h1>
+<p>This simple app demonstrates a fully working connection between application and backend server via API</p>
+<p>It uses a simple database to store books and authors</p>
+<p>It uses a simple API to retrieve and store data</p>
+<p>It uses a simple web interface to display and manipulate data</p>
+<button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/authors", forceLoad: false))">Check It!</button>
+@code {
+
+}
